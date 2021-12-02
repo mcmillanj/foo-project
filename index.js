@@ -1,9 +1,14 @@
 require('dotenv').config()
-
+const path = require('path')
 const express = require('express')
 const  server  = express()
-const PORT = process.env.PORT || 8080
-server.get('/api/users', (req, res)=> {
+
+
+server.use(express.json())
+server.use(express.static(path.join(__dirname, 'client/build')))
+ 
+
+server.get('/api/users', (req, res) => {
 res.json([
     {id: 1, username: 'foo'},
     {id: 2, username: 'bar'},
@@ -12,6 +17,11 @@ res.json([
 ])
 
 })
+server.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client/build', 'index.html'))
+})
+
+const PORT = process.env.PORT || 8080
 server.listen(PORT, () => {
     console.log(`listening on ${PORT}`)
 })
